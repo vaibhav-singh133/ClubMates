@@ -1,0 +1,19 @@
+﻿@model IEnumerable<ClubMates.Models.Teacher>
+@{
+    ViewBag.Title = "Vaibhav";
+}
+<div>
+    <h2>AddTeacher</h2>
+</div>
+
+@foreach (var teacher in Model)
+{
+<div>
+    Teacher ID: @teacher.TeacherId <br />
+    Teacher Name: @teacher.TeacherName <br />
+    Teacher Email: @teacher.TeacherEmail <br />
+    Teacher Phone: @teacher.TeacherPhone <br />
+</div>
+}
+<a href="/Teacher/AddTeacher">Add Teacher</a>
+

@@ -1,0 +1,17 @@
+﻿@Model IEnumerable<ClubMates.Models.Department>
+
+    @{
+        ViewBag.Title = "Index";
+    }
+
+    <div>
+        <h1>Department's details</h1>
+    </div>
+    @foreach (var department in Model)
+    {
+        <div>
+            Department ID: @department.DepartmentId <br />
+            Department Name: @department.DepartmentName <br />
+        </div>
+    }
+    <a href="/Department/AddDepartment">Add Department</a>

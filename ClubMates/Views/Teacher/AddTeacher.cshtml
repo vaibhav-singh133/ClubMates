@@ -1,0 +1,26 @@
+﻿@model ClubMates.Models.Teacher
+@{
+    ViewBag.Title = "AddTeacher";
+}
+
+<h2>AddTeacher</h2>
+<form action="/Teacher/AddTeacher" method="post">
+    <div>
+        <label for="TeacherName">Teacher Name:</label>
+        <input type="text" id="TeacherName" name="TeacherName" />
+    </div>
+    <div>
+        <label for="TeacherId">Teacher Id:</label>
+        <input type="text" id=" TeacherId" name="TeacherId" />
+    </div>
+    <div>
+    <label for="TeacherEmail">Teacher Email:</label>
+    <input type="text" id="TeacherEmail" name="TeacherEmail" />
+    </div>
+    <div>
+        <label for="TeacherPhone">Teacher Phone:</label>
+        <input type="text" id="TeacherPhone" name="TeacherPhone" />
+        <div>
+            <input type="submit" value="Add Student" />
+        </div>
+

@@ -1,0 +1,26 @@
+﻿@model IEnumerable<ClubMates.Models.Student>
+@{
+    ViewBag.Title = "Vaibhav";
+}
+
+<h2>Index</h2>
+<div>
+    <h1>Student Details</h1>
+</div>
+@foreach (var stu in Model)
+{
+<div>
+    Student Name: @stu.StudentName<br />
+    Student Id: @stu.StudentId <br />
+    Student Date of Birth: @stu.DateOfBirth <br />
+    Age: @{ var age = DateTime.Now.Year - stu.DateOfBirth.Year; } @age <br />}
+
+    Student Height: @stu.Height <br />
+    Student Weight: @stu.weight<br />
+
+</div>
+
+}
+<a href="/Home/AddStudent">Add Student</a>
+
+
