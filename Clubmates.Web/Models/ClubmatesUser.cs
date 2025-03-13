@@ -4,7 +4,7 @@ namespace Clubmates.Web.Models
 {
     public class ClubmatesUser : IdentityUser
     {
-        public ClubmatesRole ClubmatesRole { get; set; }
+        public ClubmatesRole? ClubmatesRole { get; set; }
         public ClubmatesProficiency ClubmatesProficiency { get; set; }
         public string? AddressLine1 { get; set; } = string.Empty;
         public string? AddressLine2 { get; set; } = string.Empty;

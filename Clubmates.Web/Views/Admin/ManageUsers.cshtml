@@ -22,8 +22,8 @@
                         <td>@user.EmailId</td>
                         <td>@user.Role</td>
                         <td>
-                            <a asp-controller="Account" asp-action="EditUser" asp-route-email="@user.EmailId" class="btn btn-primary">Edit</a>
-                            <a asp-controller="Account" asp-action="DeleteUser" asp-route-email="@user.EmailId" class="btn btn-danger">Delete</a>
+                            <a asp-controller="Admin" asp-action="EditUser" asp-route-email="@user.EmailId" class="btn btn-primary">Edit</a>
+                            <a asp-controller="Admin" asp-action="DeleteUser" asp-route-email="@user.EmailId" class="btn btn-danger">Delete</a>
                         </td>
                     </tr>
                 }
@@ -31,3 +31,12 @@
         </table>
     </div>
 }
+else
+{
+    <div>
+        <h3>No users found</h3>
+    </div>
+}
+<div>
+    <a asp-controller="Admin" asp-action="CreateUser" class="btn btn-success mb-3">Create New Account</a>
+</div>
