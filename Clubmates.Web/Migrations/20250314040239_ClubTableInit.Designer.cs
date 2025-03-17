@@ -4,6 +4,7 @@ using Clubmates.Web.AppDbContext;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -11,9 +12,11 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace Clubmates.Web.Migrations
 {
     [DbContext(typeof(AppIdentityDbContext))]
-    partial class AppIdentityDbContextModelSnapshot : ModelSnapshot
+    [Migration("20250314040239_ClubTableInit")]
+    partial class ClubTableInit
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -21,46 +24,6 @@ namespace Clubmates.Web.Migrations
                 .HasAnnotation("Relational:MaxIdentifierLength", 128);
 
             SqlServerModelBuilderExtensions.UseIdentityColumns(modelBuilder);
-
-            modelBuilder.Entity("Clubmates.Web.Models.Club", b =>
-                {
-                    b.Property<int>("ClubId")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
-
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("ClubId"));
-
-                    b.Property<int>("ClubCategory")
-                        .HasColumnType("int");
-
-                    b.Property<string>("ClubContactNumber")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("ClubDescription")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("ClubEmail")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("ClubManagerId")
-                        .HasColumnType("nvarchar(450)");
-
-                    b.Property<string>("ClubName")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("ClubRules")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<int>("ClubType")
-                        .HasColumnType("int");
-
-                    b.HasKey("ClubId");
-
-                    b.HasIndex("ClubManagerId");
-
-                    b.ToTable("Clubs");
-                });
 
             modelBuilder.Entity("Clubmates.Web.Models.ClubmatesUser", b =>
                 {
@@ -276,15 +239,6 @@ namespace Clubmates.Web.Migrations
                     b.HasKey("UserId", "LoginProvider", "Name");
 
                     b.ToTable("AspNetUserTokens", (string)null);
-                });
-
-            modelBuilder.Entity("Clubmates.Web.Models.Club", b =>
-                {
-                    b.HasOne("Clubmates.Web.Models.ClubmatesUser", "ClubManager")
-                        .WithMany()
-                        .HasForeignKey("ClubManagerId");
-
-                    b.Navigation("ClubManager");
                 });
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRoleClaim<string>", b =>

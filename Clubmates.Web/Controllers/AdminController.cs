@@ -7,20 +7,23 @@ using Microsoft.AspNetCore.Mvc.Rendering;
 using System.Security.Claims;
 using System.Linq.Expressions;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Identity.Client;
+using Clubmates.Web.AppDbContext;
+using Clubmates.Web.Models.AdminViewModel;
 
 namespace Clubmates.Web.Controllers
 {
-    public class AdminController(UserManager<ClubmatesUser> usermanager) : Controller
+    [Authorize(Policy ="MustbeSuperAdmin")]
+    public class AdminController(UserManager<ClubmatesUser> usermanager, AppIdentityDbContext dbContext) : Controller
     {
 
         private readonly UserManager<ClubmatesUser> _userManager = usermanager;
+        private readonly AppIdentityDbContext _dbContext = dbContext;
         public IActionResult Index()
         {
             return View();
 
         }
-
-        [Authorize(Policy = "MustbeSuperAdmin")]
 
         public async Task<IActionResult> ManageUsers()
         {
@@ -174,5 +177,132 @@ namespace Clubmates.Web.Controllers
             return View(new CreateUserViewModel());
 
         }
+        public async Task<IActionResult> ManageClubs()
+        {
+            var listOfClubs = await _dbContext.Clubs
+                .Include(x => x.ClubManager)
+                .ToListAsync();
+            List<ClubViewModel> clubViewModels = listOfClubs.Select(x => new ClubViewModel
+            {
+                ClubId = x.ClubId,
+                ClubName = x.ClubName,
+                ClubEmail = x.ClubEmail,
+                ClubCategory = x.ClubCategory,
+                ClubType = x.ClubType,
+                ClubRules = x.ClubRules,
+                ClubManager = x.ClubManager?.Email,
+                ClubContactNumber = x.ClubContactNumber,
+                ClubDescription = x.ClubDescription
+            }).ToList();
+            return View(clubViewModels);
+        }
+
+        public IActionResult CreateClub()
+        {
+            return View(new ClubViewModel());
+        }
+        [HttpPost]
+        public async Task<IActionResult> CreateClub(ClubViewModel clubViewModel)
+        {
+            if (!ModelState.IsValid)
+            {
+                return View(clubViewModel);
+            }
+            try
+            {
+                Club club = new()
+                {
+                    ClubName = clubViewModel.ClubName,
+                    ClubDescription = clubViewModel.ClubDescription,
+                    ClubCategory = clubViewModel.ClubCategory,
+                    ClubType = clubViewModel.ClubType,
+                    ClubRules = clubViewModel.ClubRules,
+                    ClubContactNumber = clubViewModel.ClubContactNumber,
+                    ClubEmail = clubViewModel.ClubEmail,
+                    ClubManager = await _userManager.FindByEmailAsync(clubViewModel.ClubManager ?? "")
+
+                };
+                _dbContext.Clubs.Add(club);
+                await _dbContext.SaveChangesAsync();
+                return RedirectToAction("ManageClubs");
+            }
+            catch (Exception ex)
+            {
+                ModelState.AddModelError("", ex.Message);
+                return View(clubViewModel);
+            }
+        }
+        public async Task<IActionResult> EditClub(int clubId)
+        {
+            var club = await _dbContext
+                .Clubs
+                .Include(x => x.ClubManager)
+                .FirstOrDefaultAsync(x => x.ClubId == clubId);
+            if (club != null)
+            {
+                ClubViewModel clubViewModel = new()
+                {
+                    ClubId = club.ClubId,
+                    ClubName = club.ClubName,
+                    ClubDescription = club.ClubDescription,
+                    ClubCategory = club.ClubCategory,
+                    ClubType = club.ClubType,
+                    ClubRules = club.ClubRules,
+                    ClubContactNumber = club.ClubContactNumber,
+                    ClubEmail = club.ClubEmail,
+                    ClubManager = club.ClubManager?.Email
+
+                };
+                return View(clubViewModel);
+            }
+            return NotFound();
+        }
+        [HttpPost]
+        public async Task<IActionResult> EditClub(ClubViewModel clubViewModel)
+        {
+            if (!ModelState.IsValid)
+            {
+                return View(clubViewModel);
+            }
+            try
+            {
+                var club = await _dbContext.Clubs.FindAsync(clubViewModel.ClubId);
+                if (club != null)
+                {
+                    club.ClubName = clubViewModel.ClubName;
+                    club.ClubDescription = clubViewModel.ClubDescription;
+                    club.ClubCategory = clubViewModel.ClubCategory;
+                    club.ClubType = clubViewModel.ClubType;
+                    club.ClubRules = clubViewModel.ClubRules;
+                    club.ClubContactNumber = clubViewModel.ClubContactNumber;
+                    club.ClubEmail = clubViewModel.ClubEmail;
+                    club.ClubManager = await _userManager.FindByEmailAsync(clubViewModel.ClubManager ?? "");
+                    await _dbContext.SaveChangesAsync();
+                    return RedirectToAction("ManageClubs");
+                }
+            }
+            catch (Exception ex)
+            {
+                ModelState.AddModelError("", ex.Message);
+                return View(clubViewModel);
+            }
+            return NotFound();
+        }
+        public async Task<IActionResult> DeleteClub(int clubId)
+        {
+            if (!ModelState.IsValid)
+            {
+                return RedirectToAction("ManageClubs");
+            }
+            var club = await _dbContext.Clubs.FindAsync(clubId);
+            if (club != null)
+            {
+                _dbContext.Clubs.Remove(club);
+                await _dbContext.SaveChangesAsync();
+                return RedirectToAction("ManageClubs");
+            }
+            return NotFound();
+        }
+
     }
 }

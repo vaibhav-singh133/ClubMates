@@ -8,7 +8,7 @@ namespace Clubmates.Web.Models.AccountViewModel
         public string FullName { get; set; } = string.Empty;
 
         [Required(ErrorMessage ="Email Id is Mandatory")]
-        [EmailAddress]
+        [EmailAddress(ErrorMessage ="This is not a Valid email address, Use this format")]
         public string? Email { get; set; } = string.Empty;
         [Required(ErrorMessage ="Please Provide a password to secure your account")]
         public string? Password { get; set; } = string.Empty;

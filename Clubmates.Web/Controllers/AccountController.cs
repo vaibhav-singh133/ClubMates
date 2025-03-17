@@ -69,8 +69,9 @@ namespace Clubmates.Web.Controllers
 
             return View("Success");
         }
-        public IActionResult Login()
+        public IActionResult Login(string returnUrl = "/")
         {
+            ViewData["ReturnUrl"] = returnUrl;
             return View(new LoginViewModel());
         }
         [HttpPost]
