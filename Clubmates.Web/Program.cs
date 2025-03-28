@@ -1,4 +1,5 @@
 using Clubmates.Web.AppDbContext;
+using Clubmates.Web.Areas.Club.Services;
 using Clubmates.Web.Models;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
@@ -46,8 +47,8 @@ builder.Services.AddAuthorizationBuilder()
     .RequireClaim(ClaimTypes.Role, "SuperAdmin")
     .RequireClaim(ClaimTypes.Role, "Guest"))
     .AddPolicy("MustbeGuest", policy => policy.RequireClaim(ClaimTypes.Role, "Guest"));
-    
 
+builder.Services.AddScoped<IClubLayoutService, ClubLayoutService>();
 
 var app = builder.Build();
 
@@ -65,6 +66,12 @@ app.UseStaticFiles();
 app.UseRouting();
 app.UseAuthentication();
 app.UseAuthorization();
+
+app.MapControllerRoute(
+     name: "Club",
+     pattern: "Club/{controller=Home}/{action=Index}/{id?}"
+    );
+
 
 app.MapControllerRoute(
     name: "default",

@@ -297,6 +297,15 @@ namespace Clubmates.Web.Controllers
             var club = await _dbContext.Clubs.FindAsync(clubId);
             if (club != null)
             {
+                var clubAccesses = await _dbContext.ClubAccesses.Where(x => x.Club == club).ToListAsync();
+
+                if (clubAccesses != null && clubAccesses.Count > 0)
+                {
+                    foreach (var clubAccess in clubAccesses)
+                    {
+                        _dbContext.Remove(clubAccess);
+                    }
+                }
                 _dbContext.Clubs.Remove(club);
                 await _dbContext.SaveChangesAsync();
                 return RedirectToAction("ManageClubs");
